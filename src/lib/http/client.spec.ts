@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { HttpResponse, http as mock } from 'msw';
+import { delay, HttpResponse, http as mock } from 'msw';
 
 import { server } from '@/mocks/server';
 
@@ -60,6 +60,23 @@ describe('http', () => {
     server.use(mock.post('*/api/things', () => HttpResponse.error()));
     const error = await catchProblem(http('/things', { body: {}, method: 'POST' }));
     expect(error).toMatchObject({ errorClass: 'uncertain', status: 0 });
+  });
+
+  it('gives up on a BFF that never answers', async () => {
+    server.use(
+      mock.get('*/api/slow', async () => {
+        await delay('infinite');
+        return HttpResponse.json({});
+      }),
+    );
+    const error = await catchProblem(http('/slow', { timeoutMs: 20 }));
+    expect(error).toMatchObject({ errorClass: 'availability', status: 0 });
+  });
+
+  it('turns a 2xx that is not JSON into a ProblemError', async () => {
+    server.use(mock.post('*/api/things', () => HttpResponse.html('<html>proxy</html>')));
+    const error = await catchProblem(http('/things', { body: {}, method: 'POST' }));
+    expect(error).toMatchObject({ errorClass: 'uncertain', status: 502 });
   });
 
   it('lets an aborted request fail as an abort, not as a ProblemError', async () => {

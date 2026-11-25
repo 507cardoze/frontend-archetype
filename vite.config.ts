@@ -40,6 +40,8 @@ export default defineConfig(({ mode }) => {
         thresholds: qualityGate.coverage,
       },
       environment: 'jsdom',
+      // Unit and page tests only; e2e/ runs with Playwright.
+      include: ['src/**/*.spec.{ts,tsx}', 'scripts/**/*.spec.ts'],
       // Off: the cached `import.meta.glob` in the architecture/theme guards would miss new files.
       fsModuleCache: false,
       setupFiles: ['./src/test/setup.ts'],

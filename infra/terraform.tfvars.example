@@ -1,0 +1,17 @@
+# Copy to terraform.tfvars (git-ignored) and adjust.
+project     = "my-internal-app"
+environment = "dev"
+region      = "us-east-1"
+
+# Same origin for the BFF (recommended): CloudFront forwards /api/* to it.
+# bff_origin_domain = "bff.dev.example.com"
+
+# Custom domain (certificate must be in us-east-1).
+# domain_names        = ["app.dev.example.com"]
+# acm_certificate_arn = "arn:aws:acm:us-east-1:123456789012:certificate/..."
+
+# Internal app: restrict to corporate IPs with an existing WAF web ACL.
+# web_acl_arn = "arn:aws:wafv2:us-east-1:123456789012:global/webacl/..."
+
+# Deploy from GitHub Actions without access keys.
+# github_repository = "my-org/my-internal-app"

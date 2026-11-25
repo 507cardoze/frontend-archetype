@@ -1,5 +1,5 @@
 /**
- * Errors from the BFF (RFC 7807 problem+json or any non-2xx), classified so the UI decides what
+ * Errors from the BFF (RFC 9457 problem details or any non-2xx), classified so the UI decides what
  * to show from `errorClass`, never from raw status codes.
  */
 export type ErrorClass =

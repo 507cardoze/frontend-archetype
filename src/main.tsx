@@ -19,6 +19,9 @@ const startMocks = async () => {
 
 await startMocks();
 
+// After a deploy, an open tab may request a chunk of the previous release: reload to get the new one.
+window.addEventListener('vite:preloadError', () => window.location.reload());
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={createQueryClient()}>

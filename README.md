@@ -5,8 +5,9 @@ Arquetipo del **Chapter Frontend de Pragma** para aplicaciones internas en React
 Trae resuelto:
 - **Atomic design** con reglas de importación verificadas por Fallow.
 - **Theme generado desde el Figma** (Variables → tokens).
-- **Integración con el BFF:** `fetch` + TanStack Query, sesión del BFF y errores RFC 7807.
-- **Quality gate configurable** (`pnpm quality`).
+- **Integración con el BFF:** `fetch` + TanStack Query, sesión del BFF y errores RFC 9457.
+- **Quality gate configurable** (`pnpm quality`), con tests e2e y de accesibilidad.
+- **Despliegue en AWS** (S3 + CloudFront) con Terraform y CI portable (GitHub Actions y Azure DevOps).
 
 ## Requisitos
 
@@ -17,6 +18,7 @@ Trae resuelto:
 
 ```bash
 pnpm install
+pnpm exec playwright install chromium   # una sola vez, para los tests e2e
 pnpm dev:mock
 ```
 
@@ -41,15 +43,17 @@ Ninguna `VITE_*` es secreta: terminan dentro del bundle. Se validan al arrancar;
 |---|---|
 | `pnpm dev` / `pnpm dev:mock` | Servidor de desarrollo contra el BFF real (proxy) o el simulado |
 | `pnpm build` | Revisa los tipos y genera `dist/` (estático) |
-| `pnpm test` | Tests (Vitest + Testing Library + MSW) |
+| `pnpm test` | Tests unitarios y de páginas (Vitest + Testing Library + MSW) |
+| `pnpm test:e2e` | Tests e2e y de accesibilidad sobre el build (Playwright + axe) |
 | `pnpm lint` | TypeScript y Biome |
 | `pnpm analyze` | Fallow: código muerto, complejidad, duplicación y arquitectura |
 | `pnpm quality` | El quality gate completo; es lo que corre la CI |
 | `pnpm tokens` | Regenera el theme desde `src/theme/design-tokens.json` |
+| `pnpm deploy:s3` | Sube el build a S3 y renueva CloudFront (ver [despliegue](docs/deployment.md)) |
 
 ## Stack
 
-React 19 (React Compiler) · TypeScript estricto · Vite · React Router · TanStack Query · zod · Tailwind 4 · MSW · Vitest · Biome · Fallow
+React 19 (React Compiler) · TypeScript estricto · Vite · React Router · TanStack Query · Tailwind 4 · MSW · Vitest · Playwright · Biome · Fallow · Terraform
 
 ## Estructura
 
@@ -63,7 +67,10 @@ src/
 ├── theme/        design-tokens.json (Figma) → tokens.css
 ├── mocks/        BFF simulado (MSW)
 └── test/         setup y utilidades de prueba
-scripts/          generador de tokens y runner del quality gate
+e2e/              tests e2e (Playwright)
+scripts/          generador de tokens, runner del quality gate y despliegue
+infra/            Terraform: S3, CloudFront y rol de despliegue
+ci/               plantilla de Azure DevOps (la de GitHub está en .github/workflows)
 ```
 
 ## Documentación
@@ -74,5 +81,6 @@ scripts/          generador de tokens y runner del quality gate
 | [docs/bff-integration.md](docs/bff-integration.md) | Sesión, errores, concurrencia y recetas (formularios, listados, conflictos) |
 | [docs/figma-to-code.md](docs/figma-to-code.md) | Tokens en dos capas y el paso a paso al recibir un Figma |
 | [docs/quality-gate.md](docs/quality-gate.md) | Qué revisa el gate, sus parámetros y cómo se prueba |
+| [docs/deployment.md](docs/deployment.md) | Infraestructura, despliegue, CI portable y el contrato con el BFF |
 | [docs/observability.md](docs/observability.md) | Receta para agregar observabilidad (RUM) si el proyecto la necesita |
 | [docs/decisions.md](docs/decisions.md) | Por qué este stack |

@@ -15,7 +15,3 @@ export const renderRoute = (path: string) => {
   );
   return router;
 };
-
-/** Simulates another session acting on the mock BFF (concurrency tests). */
-export const apiCall = (path: string, method: string, body: unknown) =>
-  fetch(new URL(`/api${path}`, window.location.origin), { body: JSON.stringify(body), method });

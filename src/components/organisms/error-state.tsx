@@ -1,4 +1,4 @@
-import { type ErrorClass, isRetryable, ProblemError } from '@/lib/http/problem';
+import { type ErrorClass, isConflict, isRetryable, ProblemError } from '@/lib/http/problem';
 
 import { Alert } from '../atoms/alert';
 import { Button } from '../atoms/button';
@@ -28,7 +28,7 @@ export const ErrorState = ({ error, onRetry }: Props) => {
       : MESSAGES[problem.errorClass]
     : 'Ocurrió un error inesperado.';
   // Retry only when it is safe: transient errors, conflicts (reload) or unknown errors.
-  const canRetry = !problem || isRetryable(problem) || problem.errorClass === 'conflict';
+  const canRetry = !problem || isRetryable(problem) || isConflict(problem);
 
   return (
     <Alert role="alert" tone="danger">
@@ -39,8 +39,8 @@ export const ErrorState = ({ error, onRetry }: Props) => {
         </p>
       )}
       {onRetry && canRetry && (
-        <Button className="mt-3" onClick={onRetry} trackId="error-state.retry" variant="link">
-          {problem?.errorClass === 'conflict' ? 'Recargar' : 'Reintentar'}
+        <Button className="mt-3" onClick={onRetry} variant="link">
+          {isConflict(problem) ? 'Recargar' : 'Reintentar'}
         </Button>
       )}
     </Alert>

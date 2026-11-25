@@ -7,7 +7,7 @@ import { AppHeader } from '@/components/organisms/app-header';
 import { AppShell } from '@/components/templates/app-shell';
 import { telemetry } from '@/lib/telemetry';
 
-const NAV = [{ label: 'Usuarios', to: '/usuarios', trackId: 'app-header.users' }] as const;
+const NAV = [{ label: 'Inicio', to: '/' }] as const;
 
 export const RootLayout = () => {
   const navigation = useNavigation();

@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 
-import { createBrowserRouter, type RouteObject, redirect } from 'react-router';
+import { createBrowserRouter, type RouteObject } from 'react-router';
 
 import { Loader } from '@/components/molecules/loader';
 
@@ -19,19 +19,7 @@ export const routes: RouteObject[] = [
   {
     Component: RootLayout,
     children: [
-      { index: true, loader: () => redirect('/usuarios') },
-      {
-        path: 'usuarios',
-        ...page('users-list', () => import('@/pages/users-list/users-list-page')),
-      },
-      {
-        path: 'usuarios/nuevo',
-        ...page('user-create', () => import('@/pages/user-form/user-form-page')),
-      },
-      {
-        path: 'usuarios/:userId',
-        ...page('user-edit', () => import('@/pages/user-form/user-form-page')),
-      },
+      { index: true, ...page('home', () => import('@/pages/home/home-page')) },
       { path: '*', ...page('not-found', () => import('@/pages/not-found/not-found-page')) },
     ],
     ErrorBoundary: RouteErrorPage,

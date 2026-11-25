@@ -1,8 +1,6 @@
 import { NavLink } from 'react-router';
 
-import type { TrackId } from '@/lib/telemetry';
-
-type Props = { appName: string; nav: readonly { to: string; label: string; trackId: TrackId }[] };
+type Props = { appName: string; nav: readonly { to: string; label: string }[] };
 
 // Figma: App header (app name + main navigation).
 export const AppHeader = ({ appName, nav }: Props) => (
@@ -16,7 +14,6 @@ export const AppHeader = ({ appName, nav }: Props) => (
               className={({ isActive }) =>
                 isActive ? 'font-semibold text-primary' : 'text-fg-muted hover:text-fg'
               }
-              data-track={item.trackId}
               to={item.to}
             >
               {item.label}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.15/schema.json",
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "css": { "parser": { "tailwindDirectives": true } },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+      "style": { "noNonNullAssertion": "off" },
+      "complexity": { "useLiteralKeys": "off" }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 100,
+    "useEditorconfig": true
+  },
+  "javascript": {
+    "formatter": {
+      "arrowParentheses": "always",
+      "jsxQuoteStyle": "double",
+      "quoteStyle": "single",
+      "semicolons": "always",
+      "trailingCommas": "all"
+    }
+  },
+  "overrides": [
+    { "includes": ["**/*.css"], "javascript": { "formatter": { "quoteStyle": "double" } } }
+  ],
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "useSortedAttributes": "on",
+        "useSortedKeys": "on",
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              { "source": ["vitest"], "type": true },
+              { "source": ["vitest"], "type": false },
+              ":BLANK_LINE:",
+              { "source": ["react", "react/*", "react-dom", "react-dom/*"], "type": true },
+              { "source": ["react", "react/*", "react-dom", "react-dom/*"], "type": false },
+              ":BLANK_LINE:",
+              { "source": [":PACKAGE:", "!@/**"], "type": true },
+              { "source": [":PACKAGE:", "!@/**"], "type": false },
+              ":BLANK_LINE:",
+              { "source": ["@/**"], "type": true },
+              { "source": ["@/**"], "type": false },
+              ":BLANK_LINE:",
+              { "source": [":PATH:"], "type": true },
+              { "source": [":PATH:"], "type": false }
+            ],
+            "identifierOrder": "natural"
+          }
+        }
+      }
+    }
+  }
+}

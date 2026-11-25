@@ -1,0 +1,73 @@
+{
+  "$schema": "./node_modules/fallow/schema.json",
+  "dynamicallyLoaded": ["src/pages/**/*-page.tsx", "src/mocks/browser.ts"],
+  "ignorePatterns": ["dist/**", "coverage/**", "src/mocks/public/**"],
+
+  "rules": {
+    "unused-files": "error",
+    "unused-exports": "error",
+    "unused-types": "error",
+    "unused-dependencies": "error",
+    "unused-dev-dependencies": "warn",
+    "circular-dependencies": "error",
+    "duplicate-exports": "error",
+    "boundary-violation": "error",
+    "unlisted-dependencies": "error",
+    "unresolved-imports": "error",
+    "complexity-cyclomatic": "error",
+    "complexity-cognitive": "error",
+    "complexity-crap": "error"
+  },
+
+  "health": {
+    "maxCyclomatic": 15,
+    "maxCognitive": 15,
+    "maxCrap": 30,
+    "maxUnitSize": 60,
+    "maxFileLines": 250
+  },
+
+  "duplicates": { "mode": "mild", "minLines": 8, "threshold": 3 },
+
+  "boundaries": {
+    "zones": [
+      { "name": "test", "patterns": ["src/test/**", "src/**/*.spec.ts", "src/**/*.spec.tsx"] },
+      { "name": "theme", "patterns": ["src/theme/**"] },
+      { "name": "atoms", "patterns": ["src/components/atoms/**"] },
+      { "name": "molecules", "patterns": ["src/components/molecules/**"] },
+      { "name": "organisms", "patterns": ["src/components/organisms/**"] },
+      { "name": "templates", "patterns": ["src/components/templates/**"] },
+      { "name": "pages", "patterns": ["src/pages/**"] },
+      { "name": "api", "patterns": ["src/api/**"] },
+      { "name": "lib", "patterns": ["src/lib/**"] },
+      { "name": "app", "patterns": ["src/app/**", "src/main.tsx"] },
+      { "name": "mocks", "patterns": ["src/mocks/**"] }
+    ],
+    "rules": [
+      { "from": "theme", "allow": [] },
+      { "from": "atoms", "allow": ["theme"], "allowTypeOnly": ["lib"] },
+      { "from": "molecules", "allow": ["atoms", "theme"] },
+      { "from": "organisms", "allow": ["molecules", "atoms", "theme", "lib"] },
+      { "from": "templates", "allow": ["organisms", "molecules", "atoms", "theme"] },
+      { "from": "pages", "allow": ["templates", "organisms", "molecules", "atoms", "theme", "api", "lib"] },
+      { "from": "api", "allow": ["lib"] },
+      { "from": "lib", "allow": [] },
+      { "from": "app", "allow": ["pages", "templates", "organisms", "molecules", "atoms", "theme", "lib", "mocks"] },
+      { "from": "mocks", "allow": [], "allowTypeOnly": ["api"] },
+      {
+        "from": "test",
+        "allow": ["app", "pages", "templates", "organisms", "molecules", "atoms", "theme", "api", "lib", "mocks"]
+      }
+    ],
+    "calls": {
+      "forbidden": [
+        { "from": "atoms", "callee": ["fetch", "localStorage.*", "sessionStorage.*"] },
+        { "from": "molecules", "callee": ["fetch", "localStorage.*", "sessionStorage.*"] },
+        { "from": "organisms", "callee": ["fetch", "localStorage.*", "sessionStorage.*"] },
+        { "from": "templates", "callee": ["fetch", "localStorage.*", "sessionStorage.*"] },
+        { "from": "pages", "callee": ["fetch", "localStorage.*", "sessionStorage.*"] },
+        { "from": "api", "callee": ["fetch", "localStorage.*", "sessionStorage.*"] }
+      ]
+    }
+  }
+}

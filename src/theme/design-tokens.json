@@ -1,0 +1,196 @@
+{
+  "$description": "Placeholder tokens in W3C DTCG format. Replace with the project's Figma Variables export: collection 'primitive' = raw values, collection 'semantic' = roles used by components. Then run `pnpm tokens`.",
+  "primitive": {
+    "amber": {
+      "$type": "color",
+      "50": {
+        "$value": "#fffbeb"
+      },
+      "800": {
+        "$value": "#92400e"
+      }
+    },
+    "brand": {
+      "$type": "color",
+      "50": {
+        "$value": "#eef2ff"
+      },
+      "600": {
+        "$value": "#4338ca"
+      },
+      "700": {
+        "$value": "#3730a3"
+      }
+    },
+    "green": {
+      "$type": "color",
+      "50": {
+        "$value": "#f0fdf4"
+      },
+      "800": {
+        "$value": "#166534"
+      }
+    },
+    "neutral": {
+      "$type": "color",
+      "0": {
+        "$value": "#ffffff"
+      },
+      "50": {
+        "$value": "#f8fafc"
+      },
+      "100": {
+        "$value": "#f1f5f9"
+      },
+      "200": {
+        "$value": "#e2e8f0"
+      },
+      "400": {
+        "$value": "#94a3b8"
+      },
+      "600": {
+        "$value": "#475569"
+      },
+      "900": {
+        "$value": "#0f172a"
+      }
+    },
+    "red": {
+      "$type": "color",
+      "50": {
+        "$value": "#fef2f2"
+      },
+      "700": {
+        "$value": "#b91c1c"
+      }
+    }
+  },
+  "semantic": {
+    "color": {
+      "$type": "color",
+      "canvas": {
+        "$description": "page background",
+        "$value": "{primitive.neutral.50}"
+      },
+      "danger": {
+        "$value": "{primitive.red.700}"
+      },
+      "danger-soft": {
+        "$value": "{primitive.red.50}"
+      },
+      "fg": {
+        "$description": "default text",
+        "$value": "{primitive.neutral.900}"
+      },
+      "fg-muted": {
+        "$value": "{primitive.neutral.600}"
+      },
+      "focus": {
+        "$value": "{primitive.brand.600}"
+      },
+      "info": {
+        "$value": "{primitive.brand.700}"
+      },
+      "info-soft": {
+        "$value": "{primitive.brand.50}"
+      },
+      "line": {
+        "$value": "{primitive.neutral.200}"
+      },
+      "line-strong": {
+        "$description": "input borders",
+        "$value": "{primitive.neutral.400}"
+      },
+      "on-danger": {
+        "$description": "text on danger",
+        "$value": "{primitive.neutral.0}"
+      },
+      "on-primary": {
+        "$description": "text on primary",
+        "$value": "{primitive.neutral.0}"
+      },
+      "primary": {
+        "$value": "{primitive.brand.600}"
+      },
+      "primary-hover": {
+        "$value": "{primitive.brand.700}"
+      },
+      "success": {
+        "$value": "{primitive.green.800}"
+      },
+      "success-soft": {
+        "$value": "{primitive.green.50}"
+      },
+      "surface": {
+        "$description": "cards, inputs, header, dialogs",
+        "$value": "{primitive.neutral.0}"
+      },
+      "surface-muted": {
+        "$description": "read-only fields, table header",
+        "$value": "{primitive.neutral.100}"
+      },
+      "warning": {
+        "$value": "{primitive.amber.800}"
+      },
+      "warning-soft": {
+        "$value": "{primitive.amber.50}"
+      }
+    },
+    "font": {
+      "$type": "fontFamily",
+      "mono": {
+        "$value": ["ui-monospace", "SFMono-Regular", "monospace"]
+      },
+      "sans": {
+        "$value": ["ui-sans-serif", "system-ui", "sans-serif"]
+      }
+    },
+    "radius": {
+      "$type": "dimension",
+      "card": {
+        "$description": "cards, tables, dialogs",
+        "$value": "0.5rem"
+      },
+      "control": {
+        "$description": "inputs, buttons, alerts",
+        "$value": "0.375rem"
+      }
+    },
+    "spacing": {
+      "$description": "4 px grid: p-4 = 16 px",
+      "$type": "dimension",
+      "$value": "0.25rem"
+    },
+    "text": {
+      "$type": "typography",
+      "body": {
+        "$value": {
+          "fontSize": "0.875rem",
+          "lineHeight": "1.25rem"
+        }
+      },
+      "caption": {
+        "$value": {
+          "fontSize": "0.75rem",
+          "lineHeight": "1rem"
+        }
+      },
+      "heading": {
+        "$description": "section, dialog",
+        "$value": {
+          "fontSize": "1.125rem",
+          "fontWeight": 600,
+          "lineHeight": "1.75rem"
+        }
+      },
+      "title": {
+        "$description": "page title",
+        "$value": {
+          "fontSize": "1.5rem",
+          "fontWeight": 700,
+          "lineHeight": "2rem"
+        }
+      }
+    }
+  }
+}

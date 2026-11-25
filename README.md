@@ -281,19 +281,6 @@ En un repositorio existente, `"scope": "changes"` hace que Fallow solo falle por
 
 ---
 
-## Flujo de trabajo (trunk-based)
-
-- **`main` es el tronco** y siempre está listo para desplegar. No hay ramas de larga vida (`develop`, `release`).
-- Cada cambio va en una **rama corta** (horas o pocos días) y entra por **Pull Request**.
-- Un PR se puede mergear solo si:
-  - el check **`quality`** (GitHub Actions corre `pnpm quality`) está en verde;
-  - lo **aprobó el code owner** (`.github/CODEOWNERS`);
-  - está al día con `main`.
-- Se mergea con **squash**, así `main` queda con un commit por cambio y el historial es lineal. La rama se borra al mergear.
-- Nadie hace push directo, force push ni borra `main`.
-
----
-
 ## Pruebas
 
 - Se prueban las **páginas como las usa una persona**: se renderizan las rutas reales y se consulta por rol o por label, lo que de paso valida la accesibilidad básica.

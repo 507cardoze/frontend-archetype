@@ -9,7 +9,7 @@ import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 
-const STEP_NAMES = ['typecheck', 'lint', 'test', 'staticAnalysis', 'build'] as const;
+const STEP_NAMES = ['typecheck', 'lint', 'test', 'staticAnalysis', 'build', 'e2e'] as const;
 type StepName = (typeof STEP_NAMES)[number];
 
 export type GateConfig = {
@@ -34,7 +34,11 @@ const staticAnalysisCommand = ({ staticAnalysis, steps }: GateConfig) => {
 export const planSteps = (config: GateConfig): (Step & { enabled: boolean })[] => {
   const steps: Step[] = [
     { command: ['tsc', '-b'], label: 'Tipos (tsc)', name: 'typecheck' },
-    { command: ['biome', 'ci', 'src', 'scripts'], label: 'Lint y formato (Biome)', name: 'lint' },
+    {
+      command: ['biome', 'ci', 'src', 'scripts', 'e2e'],
+      label: 'Lint y formato (Biome)',
+      name: 'lint',
+    },
     { command: ['vitest', 'run', '--coverage'], label: 'Tests y cobertura (Vitest)', name: 'test' },
     {
       command: staticAnalysisCommand(config),
@@ -42,6 +46,11 @@ export const planSteps = (config: GateConfig): (Step & { enabled: boolean })[] =
       name: 'staticAnalysis',
     },
     { command: ['vite', 'build'], label: 'Build (Vite)', name: 'build' },
+    {
+      command: ['playwright', 'test'],
+      label: 'E2E y accesibilidad (Playwright + axe)',
+      name: 'e2e',
+    },
   ];
   return steps.map((step) => ({ ...step, enabled: config.steps[step.name] }));
 };

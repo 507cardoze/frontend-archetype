@@ -1,0 +1,51 @@
+name: Deploy
+
+# Runs after the quality gate passes on main, or by hand. Disabled until the repository has the
+# variables listed in docs/deployment.md (AWS_DEPLOY_ROLE_ARN, AWS_REGION, DEPLOY_BUCKET,
+# CLOUDFRONT_DISTRIBUTION_ID).
+on:
+  workflow_run:
+    workflows: [Quality gate]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # OIDC: temporary AWS credentials, no access keys stored anywhere
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: >-
+      vars.AWS_DEPLOY_ROLE_ARN != '' &&
+      (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Approvals and environment variables live in this GitHub environment.
+    environment: production
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+        env:
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL || '/api' }}
+          VITE_LOGIN_URL: ${{ vars.VITE_LOGIN_URL || '/api/auth/login' }}
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - run: pnpm deploy:s3
+        env:
+          DEPLOY_BUCKET: ${{ vars.DEPLOY_BUCKET }}
+          CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}

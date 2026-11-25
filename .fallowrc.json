@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/fallow/schema.json",
   "dynamicallyLoaded": ["src/pages/**/*-page.tsx", "src/mocks/browser.ts"],
-  "ignorePatterns": ["dist/**", "coverage/**", "src/mocks/public/**"],
+  "ignorePatterns": ["dist/**", "dist-e2e/**", "coverage/**", "src/mocks/public/**", "infra/**"],
 
   "rules": {
     "unused-files": "error",

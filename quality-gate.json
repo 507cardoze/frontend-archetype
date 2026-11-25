@@ -4,7 +4,8 @@
     "lint": true,
     "test": true,
     "staticAnalysis": true,
-    "build": true
+    "build": true,
+    "e2e": true
   },
   "coverage": {
     "lines": 80,

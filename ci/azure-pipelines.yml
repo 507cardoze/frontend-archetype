@@ -1,0 +1,64 @@
+# Azure DevOps template: the same commands as GitHub Actions (all logic lives in the repo).
+# Create the pipeline from this file and set up, once per project:
+#  - Variable group "frontend-deploy": AWS_REGION, DEPLOY_BUCKET, CLOUDFRONT_DISTRIBUTION_ID,
+#    VITE_API_BASE_URL and VITE_LOGIN_URL (all required).
+#  - An AWS service connection (AWS Toolkit for Azure DevOps) that assumes the deploy role with
+#    OIDC. Replace "aws-frontend-deploy" below with its name.
+#  - Environment "production", with the approvals the project needs.
+# See docs/deployment.md.
+
+trigger:
+  branches:
+    include: [main]
+
+pr:
+  branches:
+    include: [main]
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: quality
+    jobs:
+      - job: quality
+        timeoutInMinutes: 15
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: "22.x"
+          - script: corepack enable # pnpm version comes from package.json > packageManager
+          - script: pnpm install --frozen-lockfile
+          - script: pnpm exec playwright install --with-deps chromium
+          - script: pnpm quality
+
+  - stage: deploy
+    dependsOn: quality
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    variables:
+      - group: frontend-deploy
+    jobs:
+      - deployment: deploy
+        environment: production
+        timeoutInMinutes: 15
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - task: NodeTool@0
+                  inputs:
+                    versionSpec: "22.x"
+                - script: corepack enable && pnpm install --frozen-lockfile && pnpm build
+                  env:
+                    VITE_API_BASE_URL: $(VITE_API_BASE_URL)
+                    VITE_LOGIN_URL: $(VITE_LOGIN_URL)
+                - task: AWSShellScript@1
+                  inputs:
+                    awsCredentials: aws-frontend-deploy
+                    regionName: $(AWS_REGION)
+                    scriptType: inline
+                    inlineScript: pnpm deploy:s3
+                  env:
+                    DEPLOY_BUCKET: $(DEPLOY_BUCKET)
+                    CLOUDFRONT_DISTRIBUTION_ID: $(CLOUDFRONT_DISTRIBUTION_ID)

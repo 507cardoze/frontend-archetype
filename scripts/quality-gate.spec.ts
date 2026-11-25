@@ -4,7 +4,7 @@ import { type GateConfig, planSteps, summarize } from './quality-gate.ts';
 
 const config = (overrides: Partial<GateConfig> = {}): GateConfig => ({
   staticAnalysis: { base: 'origin/main', scope: 'project' },
-  steps: { build: true, lint: true, staticAnalysis: true, test: true, typecheck: true },
+  steps: { build: true, e2e: true, lint: true, staticAnalysis: true, test: true, typecheck: true },
   ...overrides,
 });
 
@@ -22,6 +22,7 @@ describe('planSteps', () => {
       'test',
       'staticAnalysis',
       'build',
+      'e2e',
     ]);
     expect(steps.find((step) => step.name === 'build')?.enabled).toBe(false);
   });

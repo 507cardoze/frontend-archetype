@@ -13,6 +13,9 @@ pnpm install --frozen-lockfile && pnpm quality
 | Tests y cobertura | `vitest --coverage` | falla un test o la cobertura queda bajo el mínimo |
 | Análisis estático | Fallow | hay código muerto, dependencias sin uso, ciclos, complejidad o CRAP sobre el umbral, duplicación o violaciones de arquitectura |
 | Build | `vite build` | el build de producción no compila |
+| E2E y accesibilidad | Playwright + axe | la app no arranca sobre el build real, una ruta profunda no carga o hay violaciones de accesibilidad |
+
+La CI corre además un job `infra`: `terraform fmt`, `validate` y `test` (con AWS simulado) sobre `infra/`.
 
 ## Parámetros
 
@@ -22,7 +25,7 @@ Cada proyecto ajusta tres archivos; el runner (`scripts/quality-gate.ts`) no se 
 
 | Clave | Qué controla | Por defecto |
 |---|---|---|
-| `steps.<paso>` | Activa o desactiva `typecheck`, `lint`, `test`, `staticAnalysis` y `build` | todos `true` |
+| `steps.<paso>` | Activa o desactiva `typecheck`, `lint`, `test`, `staticAnalysis`, `build` y `e2e` | todos `true` |
 | `coverage.lines` / `statements` / `functions` / `branches` | Cobertura mínima en % | 80 / 80 / 80 / 70 |
 | `staticAnalysis.scope` | `project` analiza todo; `changes` solo lo que cambia frente a `base` | `project` |
 | `staticAnalysis.base` | Rama de comparación cuando `scope` es `changes` | `origin/main` |
@@ -51,3 +54,9 @@ Corrige, no suprimas: un hallazgo de Fallow es una señal, y los `ignore*` son s
 - El BFF lo simula **MSW** con los mismos handlers de `dev:mock`. Un request sin handler hace fallar el test; cada caso puede sobrescribir uno con `server.use(...)`.
 - La **lógica pura** (errores, cliente HTTP, schemas, scripts) tiene tests unitarios. Si no los tiene, Fallow la marca por CRAP.
 - `conventions.spec.ts` protege lo que ningún linter ve: que los componentes usen solo tokens del theme.
+- Los **e2e** (`e2e/`) corren en Chromium sobre el build de producción en modo mock: la app compilada, sin backend. Antes de la primera vez: `pnpm exec playwright install chromium`.
+
+## Dependencias
+
+- **Dependabot** (`.github/dependabot.yml`) propone actualizaciones semanales de npm, GitHub Actions y Terraform, y espera 14 días antes de proponer una versión nueva.
+- **pnpm** solo permite scripts de instalación a los paquetes listados en `allowBuilds`, y con `trustPolicy: no-downgrade` rechaza una versión publicada con menos garantías de origen que la anterior.

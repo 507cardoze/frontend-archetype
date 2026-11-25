@@ -1,13 +1,18 @@
-import { z } from 'zod';
+/**
+ * Reads the VITE_* variables once and fails fast: a misconfigured build must not reach a user.
+ * Nothing here is secret: these values end up in the bundle.
+ */
+const read = (name: string, fallback: string) => {
+  const value: unknown = import.meta.env[name];
+  return typeof value === 'string' && value !== '' ? value : fallback;
+};
 
-const envSchema = z.object({
-  VITE_API_BASE_URL: z.string().startsWith('/').default('/api'),
-  VITE_API_MOCKS: z
-    .enum(['true', 'false'])
-    .default('false')
-    .transform((value) => value === 'true'),
-  VITE_LOGIN_URL: z.string().min(1).default('/api/auth/login'),
-});
+const apiBaseUrl = read('VITE_API_BASE_URL', '/api');
+if (!apiBaseUrl.startsWith('/')) {
+  throw new Error('Invalid VITE_API_BASE_URL: use a same-origin path such as /api');
+}
 
-// Fail fast: a misconfigured build must not reach a user's screen.
-export const env = envSchema.parse(import.meta.env);
+export const env = {
+  VITE_API_BASE_URL: apiBaseUrl,
+  VITE_LOGIN_URL: read('VITE_LOGIN_URL', '/api/auth/login'),
+};

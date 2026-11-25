@@ -7,13 +7,12 @@ import { ProblemError, type RequestKind } from '@/lib/http/problem';
 import { ErrorState } from './error-state';
 
 const problem = (status: number, kind: RequestKind = 'command', detail?: string) =>
-  new ProblemError({ correlationId: 'c-9', detail, kind, status });
+  new ProblemError({ detail, kind, status });
 
 describe('ErrorState', () => {
-  it('shows the BFF business message and the tracking code', () => {
+  it('shows the BFF business message', () => {
     render(<ErrorState error={problem(422, 'command', 'Ya existe un registro.')} />);
     expect(screen.getByRole('alert')).toHaveTextContent('Ya existe un registro.');
-    expect(screen.getByText('c-9')).toBeInTheDocument();
   });
 
   it('offers a reload on a conflict', () => {

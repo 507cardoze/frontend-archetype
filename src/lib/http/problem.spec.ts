@@ -23,8 +23,7 @@ describe('classify', () => {
 
 describe('isRetryable', () => {
   it('only retries availability and temporary errors', () => {
-    const make = (status: number) =>
-      new ProblemError({ correlationId: 'c-1', kind: 'command', status });
+    const make = (status: number) => new ProblemError({ kind: 'command', status });
 
     expect(isRetryable(make(503))).toBe(true);
     expect(isRetryable(make(429))).toBe(true);

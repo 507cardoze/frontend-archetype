@@ -50,4 +50,4 @@ Corrige, no suprimas: un hallazgo de Fallow es una señal, y los `ignore*` son s
 - Las **páginas** se prueban como las usa una persona: `renderRoute` monta las rutas reales y se consulta por rol o por label, lo que además valida la accesibilidad básica.
 - El BFF lo simula **MSW** con los mismos handlers de `dev:mock`. Un request sin handler hace fallar el test; cada caso puede sobrescribir uno con `server.use(...)`.
 - La **lógica pura** (errores, cliente HTTP, schemas, scripts) tiene tests unitarios. Si no los tiene, Fallow la marca por CRAP.
-- `conventions.spec.ts` protege lo que ningún linter ve: los tokens del theme y el formato de los `trackId`.
+- `conventions.spec.ts` protege lo que ningún linter ve: que los componentes usen solo tokens del theme.

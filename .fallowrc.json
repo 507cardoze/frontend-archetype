@@ -45,7 +45,7 @@
     ],
     "rules": [
       { "from": "theme", "allow": [] },
-      { "from": "atoms", "allow": ["theme"], "allowTypeOnly": ["lib"] },
+      { "from": "atoms", "allow": ["theme"] },
       { "from": "molecules", "allow": ["atoms", "theme"] },
       { "from": "organisms", "allow": ["molecules", "atoms", "theme", "lib"] },
       { "from": "templates", "allow": ["organisms", "molecules", "atoms", "theme"] },

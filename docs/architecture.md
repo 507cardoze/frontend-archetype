@@ -40,7 +40,7 @@ Los componentes del esqueleto son la base mínima. El resto llega con el Figma d
 2. **Mock:** los endpoints en `mocks/handlers.ts`, respondiendo como el BFF real.
 3. **Página:** `pages/<página>/` con `<página>-page.tsx` (solo composición) y, si hace falta, `use-<página>-vm.ts` y `<página>.schema.ts`.
 4. **Componentes:** lo que traiga el Figma, en su nivel.
-5. **Ruta:** una entrada lazy en `app/router.tsx`, con un `id` (nombra la pantalla en la telemetría).
+5. **Ruta:** una entrada lazy en `app/router.tsx`.
 6. **Test:** `<página>-page.spec.tsx` con `renderRoute` (ver [quality-gate.md](quality-gate.md#pruebas)).
 7. **Gate:** `pnpm quality` en verde antes de abrir el PR.
 

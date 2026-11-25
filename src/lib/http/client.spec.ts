@@ -16,7 +16,7 @@ const catchProblem = (promise: Promise<unknown>) =>
   );
 
 describe('http', () => {
-  it('sends JSON with a correlation id on the same origin', async () => {
+  it('sends JSON on the same origin', async () => {
     let seen: Request | undefined;
     server.use(
       mock.post('*/api/things', ({ request }) => {
@@ -29,7 +29,6 @@ describe('http', () => {
       id: 't-1',
     });
     expect(seen?.headers.get('Content-Type')).toBe('application/json');
-    expect(seen?.headers.get('X-Correlation-Id')).toMatch(/^[\da-f-]{36}$/);
     expect(await seen?.json()).toEqual({ name: 'a' });
   });
 
@@ -43,7 +42,7 @@ describe('http', () => {
       mock.put('*/api/things/1', () =>
         HttpResponse.json(
           { detail: 'Ya existe.', status: 422, title: 'Business rule' },
-          { headers: { 'X-Correlation-Id': 'bff-1' }, status: 422 },
+          { status: 422 },
         ),
       ),
     );
@@ -51,7 +50,6 @@ describe('http', () => {
     const error = await catchProblem(http('/things/1', { body: {}, method: 'PUT' }));
     expect(error).toBeInstanceOf(ProblemError);
     expect(error).toMatchObject({
-      correlationId: 'bff-1',
       detail: 'Ya existe.',
       errorClass: 'business',
       status: 422,

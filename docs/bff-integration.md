@@ -8,10 +8,12 @@ Si el proyecto no tiene login propio (por ejemplo, se abre desde otro sistema), 
 
 ## Un solo cliente HTTP
 
-`lib/http/client.ts` es el único `fetch` de la app, y solo lo usa `api/`:
-- envía un `X-Correlation-Id` en cada llamada;
-- usa `credentials: 'same-origin'`;
+`lib/http/client.ts` es un `fetch` mínimo, y solo lo usa `api/`:
+- llama al BFF en el mismo origen, con `credentials: 'same-origin'`;
+- envía y recibe JSON;
 - convierte cualquier falla (respuesta no 2xx o red caída) en un `ProblemError`.
+
+Las queries y mutations se arman con TanStack Query en `api/` (ver `api/health.ts`).
 
 ## Errores por clase, no por código HTTP
 
@@ -28,7 +30,7 @@ Si el proyecto no tiene login propio (por ejemplo, se abre desde otro sistema), 
 | 503, o 5xx/red en una lectura | `availability` | Sí | "No se pudo conectar" y botón **Reintentar** |
 | 5xx o red en un **comando** | `uncertain` | **Nunca** | "No sabemos si se aplicó. Verifica antes de repetir" |
 
-La última fila evita duplicados: si guardar devuelve 500 o se corta la red, el BFF pudo haberlo aplicado. Cada error muestra el **código de seguimiento** (Correlation-Id), para que soporte encuentre el request en los logs del BFF.
+La última fila evita duplicados: si guardar devuelve 500 o se corta la red, el BFF pudo haberlo aplicado.
 
 ## Estado del servidor
 

@@ -10,8 +10,7 @@ const MESSAGES: Record<ErrorClass, string> = {
   conflict: 'Los datos cambiaron mientras trabajabas. Recarga para ver la versión actual.',
   forbidden: 'No tienes permiso para ver o hacer esto.',
   'not-found': 'No encontramos lo que buscas. Puede que se haya eliminado.',
-  request:
-    'La petición no es válida. Si el problema sigue, repórtalo con el código de seguimiento.',
+  request: 'La petición no es válida. Si el problema sigue, repórtalo a soporte.',
   temporary: 'El servicio está ocupado. Intenta de nuevo en unos segundos.',
   unauthenticated: 'Tu sesión venció. Te llevamos a iniciar sesión.',
   uncertain: 'No sabemos si la operación se aplicó. Verifica antes de repetirla.',
@@ -19,7 +18,7 @@ const MESSAGES: Record<ErrorClass, string> = {
 
 type Props = { error: unknown; onRetry?: () => void };
 
-// Figma: Error state. Shows the tracking code so support can find the request in the BFF logs.
+// Figma: Error state.
 export const ErrorState = ({ error, onRetry }: Props) => {
   const problem = error instanceof ProblemError ? error : undefined;
   const message = problem
@@ -33,11 +32,6 @@ export const ErrorState = ({ error, onRetry }: Props) => {
   return (
     <Alert role="alert" tone="danger">
       <p>{message}</p>
-      {problem && (
-        <p className="mt-1 text-caption">
-          Código de seguimiento: <span className="font-mono">{problem.correlationId}</span>
-        </p>
-      )}
       {onRetry && canRetry && (
         <Button className="mt-3" onClick={onRetry} variant="link">
           {isConflict(problem) ? 'Recargar' : 'Reintentar'}

@@ -11,6 +11,6 @@
 | MSW | El mismo mock para desarrollar y para probar, a nivel de red. El código de producción no sabe que está simulado |
 | Biome | Lint y formato en una sola herramienta rápida |
 | Fallow | Analiza el proyecto completo: código muerto, ciclos, CRAP con cobertura real, duplicación y las reglas de atomic design como `boundaries` |
-| Telemetría por adaptador, opcional | El proveedor se cambia en un archivo, y un proyecto sin RUM no paga nada |
+| Sin telemetría en la base | No todos los proyectos tienen RUM; la receta queda en `docs/observability.md` |
 | Un runner propio para el gate | Un solo comando para el desarrollador y la CI, con las reglas en archivos de configuración |
-| Esqueleto sin dominio | El proyecto empieza con su propia página y no tiene que borrar un ejemplo. Las recetas viven en `docs/` |
+| Esqueleto sin dominio y patrones reconocibles | El proyecto parte de lo mínimo conocido por la industria (`fetch` + TanStack Query, RFC 7807) y no tiene que borrar ejemplos. Las recetas viven en `docs/` |

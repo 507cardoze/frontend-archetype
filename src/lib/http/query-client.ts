@@ -1,7 +1,6 @@
 import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query';
 
 import { env } from '@/lib/env';
-import { telemetry } from '@/lib/telemetry';
 
 import { isRetryable, ProblemError } from './problem';
 
@@ -12,15 +11,8 @@ const redirectToLogin = () => {
 };
 
 export const createQueryClient = ({ onUnauthorized = redirectToLogin } = {}) => {
-  // Every failed query or command is reported once, here, with its correlation id.
   const onError = (error: unknown) => {
-    if (!(error instanceof ProblemError)) {
-      telemetry.error('http', { errorClass: 'unexpected' });
-      return;
-    }
-    const { correlationId, errorClass, status } = error;
-    telemetry.error('http', { correlationId, errorClass, status });
-    if (errorClass === 'unauthenticated') onUnauthorized();
+    if (error instanceof ProblemError && error.errorClass === 'unauthenticated') onUnauthorized();
   };
 
   return new QueryClient({

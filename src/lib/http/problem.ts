@@ -35,13 +35,11 @@ const RETRYABLE: ReadonlySet<ErrorClass> = new Set(['availability', 'temporary']
 export class ProblemError extends Error {
   readonly status: number;
   readonly errorClass: ErrorClass;
-  readonly correlationId: string;
   readonly detail: string | undefined;
 
   constructor(init: {
     status: number;
     kind: RequestKind;
-    correlationId: string;
     title?: string | undefined;
     detail?: string | undefined;
   }) {
@@ -49,7 +47,6 @@ export class ProblemError extends Error {
     this.name = 'ProblemError';
     this.status = init.status;
     this.errorClass = classify(init.status, init.kind);
-    this.correlationId = init.correlationId;
     this.detail = init.detail;
   }
 }

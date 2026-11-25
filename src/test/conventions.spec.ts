@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
 /**
- * Conventions no linter covers. Fallow checks architecture (atomic levels, layers), dead code,
- * complexity and duplication; this file checks the two rules that live in JSX strings.
+ * Theme rule no linter covers: components use design tokens only. Fallow checks the rest
+ * (atomic levels, layers, dead code, complexity, duplication).
  */
 const sources = Object.entries(
   import.meta.glob<string>(['/src/**/*.tsx', '!/src/**/*.spec.tsx'], {
@@ -25,19 +25,8 @@ const RAW_STYLES = [
   /\[#[\da-f]{3,8}\]|['"]#[\da-f]{3,8}['"]/i,
 ];
 
-const TRACK_ID = /^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+$/;
-
 describe('theme: only design tokens', () => {
   it.each(sources)('%s', (_file, source) => {
     for (const pattern of RAW_STYLES) expect(source).not.toMatch(pattern);
-  });
-});
-
-describe('observability: static, well-formed track ids', () => {
-  it.each(sources)('%s', (_file, source) => {
-    // A computed id could leak user data (ids, emails) into the RUM tool.
-    expect(source).not.toMatch(/trackId=\{/);
-    const ids = [...source.matchAll(/trackId[=:]\s*["']([^"']+)["']/g)].map((match) => match[1]);
-    for (const id of ids) expect(id).toMatch(TRACK_ID);
   });
 });

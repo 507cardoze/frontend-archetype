@@ -7,7 +7,6 @@ import { RouterProvider } from 'react-router/dom';
 import { createRouter } from '@/app/router';
 import '@/lib/env';
 import { createQueryClient } from '@/lib/http/query-client';
-import { setTelemetrySink } from '@/lib/telemetry';
 
 import './styles.css';
 
@@ -19,9 +18,6 @@ const startMocks = async () => {
 };
 
 await startMocks();
-
-// Plug the RUM/OpenTelemetry vendor here (see docs/observability.md). Dev: log to the console.
-if (import.meta.env.DEV) setTelemetrySink((event) => console.debug('[telemetry]', event));
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

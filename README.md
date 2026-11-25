@@ -5,9 +5,8 @@ Arquetipo del **Chapter Frontend de Pragma** para aplicaciones internas en React
 Trae resuelto:
 - **Atomic design** con reglas de importación verificadas por Fallow.
 - **Theme generado desde el Figma** (Variables → tokens).
-- **Integración con el BFF:** sesión del BFF, un solo cliente HTTP y errores clasificados.
+- **Integración con el BFF:** `fetch` + TanStack Query, sesión del BFF y errores RFC 7807.
 - **Quality gate configurable** (`pnpm quality`).
-- **Observabilidad opcional**, sin atarse a un proveedor.
 
 ## Requisitos
 
@@ -60,7 +59,7 @@ src/
 ├── pages/        una carpeta por página (página + view model + test)
 ├── components/   atomic design: atoms/ molecules/ organisms/ templates/
 ├── api/          un archivo por recurso del BFF
-├── lib/          infraestructura: env, cliente HTTP, errores, query client, telemetría
+├── lib/          infraestructura: env, cliente HTTP, errores, query client
 ├── theme/        design-tokens.json (Figma) → tokens.css
 ├── mocks/        BFF simulado (MSW)
 └── test/         setup y utilidades de prueba
@@ -75,5 +74,5 @@ scripts/          generador de tokens y runner del quality gate
 | [docs/bff-integration.md](docs/bff-integration.md) | Sesión, errores, concurrencia y recetas (formularios, listados, conflictos) |
 | [docs/figma-to-code.md](docs/figma-to-code.md) | Tokens en dos capas y el paso a paso al recibir un Figma |
 | [docs/quality-gate.md](docs/quality-gate.md) | Qué revisa el gate, sus parámetros y cómo se prueba |
-| [docs/observability.md](docs/observability.md) | Telemetría opcional: vistas, errores, interacciones y proveedor |
+| [docs/observability.md](docs/observability.md) | Receta para agregar observabilidad (RUM) si el proyecto la necesita |
 | [docs/decisions.md](docs/decisions.md) | Por qué este stack |

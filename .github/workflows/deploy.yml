@@ -1,8 +1,8 @@
 name: Deploy
 
-# Runs after the quality gate passes on main, or by hand. Disabled until the repository has the
-# variables listed in docs/deployment.md (AWS_DEPLOY_ROLE_ARN, AWS_REGION, DEPLOY_BUCKET,
-# CLOUDFRONT_DISTRIBUTION_ID).
+# Runs after the quality gate passes on a push to main, or by hand from main. Off until the
+# repository variable DEPLOY_ENABLED is 'true' (see docs/deployment.md). It has to be a repository
+# variable: environment variables do not exist yet when the job-level `if` is evaluated.
 on:
   workflow_run:
     workflows: [Quality gate]
@@ -20,9 +20,14 @@ concurrency:
 
 jobs:
   deploy:
+    # `branches: [main]` above matches the head branch name, which a fork PR can also call main:
+    # deploy only runs that came from a push to this repository.
     if: >-
-      vars.AWS_DEPLOY_ROLE_ARN != '' &&
-      (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success')
+      vars.DEPLOY_ENABLED == 'true' &&
+      ((github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_repository.full_name == github.repository))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     # Approvals and environment variables live in this GitHub environment.

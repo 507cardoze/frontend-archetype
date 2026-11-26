@@ -5,6 +5,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router/dom';
 
 import { createRouter } from '@/app/router';
+import { reloadOnStaleChunk } from '@/app/stale-chunk-reload';
 import '@/lib/env';
 import { createQueryClient } from '@/lib/http/query-client';
 
@@ -19,8 +20,7 @@ const startMocks = async () => {
 
 await startMocks();
 
-// After a deploy, an open tab may request a chunk of the previous release: reload to get the new one.
-window.addEventListener('vite:preloadError', () => window.location.reload());
+reloadOnStaleChunk();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

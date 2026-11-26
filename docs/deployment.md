@@ -21,7 +21,7 @@ navegador ──HTTPS──▶ CloudFront ──▶ S3 privado (OAC)       la ap
 - **Cabeceras de seguridad** en cada respuesta: CSP, HSTS, `nosniff`, `frame-ancestors 'none'` y referrer policy. La CSP se ajusta con la variable `content_security_policy`.
 - **Ruteo SPA:** una CloudFront Function devuelve `index.html` en las rutas sin extensión, así que recargar `/usuarios/42` funciona. No se usan las páginas de error de CloudFront, porque convertirían los 404 del BFF en 200.
 - **Caché:** `assets/` (nombres con hash) se guarda un año como `immutable`; `index.html` se revalida siempre y se invalida en cada despliegue.
-- **Releases sin cortes:** los assets viejos no se borran, así una pestaña abierta con el release anterior sigue cargando sus chunks. Si aun así falta uno, la app se recarga sola (`vite:preloadError`).
+- **Releases sin cortes:** los assets viejos no se borran, así una pestaña abierta con el release anterior sigue cargando sus chunks. Si aun así falta uno, la app se recarga una vez (`vite:preloadError`); si vuelve a fallar enseguida, muestra el error en vez de recargar sin fin.
 - **WAF opcional** (`web_acl_arn`), por ejemplo para limitar una app interna a las IPs corporativas.
 
 ## Paso a paso
@@ -52,9 +52,15 @@ Con las salidas de `terraform apply`, en GitHub → Settings → Environments �
 | `CLOUDFRONT_DISTRIBUTION_ID` | Salida `distribution_id` |
 | `VITE_API_BASE_URL`, `VITE_LOGIN_URL` | Opcionales; por defecto `/api` y `/api/auth/login` |
 
-En el environment `production` se agregan las aprobaciones que el proyecto necesite. El rol solo confía en jobs de este repositorio que corren en ese environment (OIDC: credenciales temporales, sin llaves guardadas).
+En el environment `production`:
+- **Required reviewers:** recomendado; nada llega a producción sin una aprobación.
+- **Deployment branches:** solo `main`.
 
-Mientras `AWS_DEPLOY_ROLE_ARN` no exista, el workflow de despliegue no hace nada.
+El rol solo confía en jobs de este repositorio que corren en ese environment (OIDC: credenciales temporales, sin llaves guardadas).
+
+Por último, en Settings → Secrets and variables → Actions → **Variables** (de repositorio, no del environment), se crea `DEPLOY_ENABLED` = `true`. Es el interruptor: mientras no exista, el workflow de despliegue no hace nada. Va en el repositorio porque las variables del environment todavía no existen cuando GitHub decide si el job corre.
+
+El despliegue automático solo corre tras un **push a `main` de este mismo repositorio**; un PR, aunque venga de un fork con una rama llamada `main`, nunca despliega.
 
 ### 3. Desplegar
 
